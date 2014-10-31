@@ -1,5 +1,6 @@
 package net.shangtech.fromework.dao.impl;
 
+import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 
 import net.shangtech.fromework.dao.IBaseDao;
@@ -8,7 +9,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.support.HibernateDaoSupport;
 
-public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
+public class BaseDao<T, PK extends Serializable> extends HibernateDaoSupport implements IBaseDao<T, PK> {
 
 	public void insert(T entity) {
 		getHibernateTemplate().save(entity);
@@ -19,11 +20,11 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public T find(int id) {
+	public T find(PK id) {
 		return (T) getHibernateTemplate().get(getEntityClass(), id);
 	}
 
-	public void delete(int id) {
+	public void delete(PK id) {
 		getHibernateTemplate().delete(find(id));
 	}
 	
