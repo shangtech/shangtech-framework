@@ -1,4 +1,4 @@
-package net.shangtech.fromework.hibernate;
+package net.shangtech.framework.hibernate;
 
 import java.io.Serializable;
 

@@ -2,7 +2,7 @@
 <xsd:schema xmlns="http://loxia.benjamin.cn/schema/core"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 	xmlns:beans="http://www.springframework.org/schema/beans"
-	targetNamespace="http://songxh.shangtech.net/schema/core"
+	targetNamespace="http://www.shangtech.net/schema/framework"
 	elementFormDefault="qualified"
 	attributeFormDefault="unqualified">
 
@@ -10,6 +10,11 @@
 	 	schemaLocation="http://www.springframework.org/schema/beans/spring-beans.xsd"/>	
 	
 	<xsd:element name="dao-config">
+		<xsd:complexType>
+			<xsd:attribute name="base-package" type="xsd:string"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="dao-test">
 		<xsd:complexType>
 			<xsd:attribute name="base-package" type="xsd:string"/>
 		</xsd:complexType>

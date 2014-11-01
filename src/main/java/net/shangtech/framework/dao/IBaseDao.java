@@ -1,4 +1,4 @@
-package net.shangtech.fromework.dao;
+package net.shangtech.framework.dao;
 
 import java.io.Serializable;
 

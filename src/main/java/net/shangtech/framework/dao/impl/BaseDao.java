@@ -1,9 +1,9 @@
-package net.shangtech.fromework.dao.impl;
+package net.shangtech.framework.dao.impl;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 
-import net.shangtech.fromework.dao.IBaseDao;
+import net.shangtech.framework.dao.IBaseDao;
 
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;

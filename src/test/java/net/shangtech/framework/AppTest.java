@@ -1,4 +1,4 @@
-package net.shangtech.fromework;
+package net.shangtech.framework;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
