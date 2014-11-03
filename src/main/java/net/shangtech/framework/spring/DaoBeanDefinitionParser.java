@@ -5,12 +5,12 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.BeanDefinitionHolder;
-import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
+import org.springframework.beans.factory.parsing.BeanComponentDefinition;
+import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanNameGenerator;
+import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
-import org.springframework.beans.factory.xml.XmlReaderContext;
 import org.springframework.context.annotation.AnnotationBeanNameGenerator;
 import org.w3c.dom.Element;
 
@@ -29,18 +29,28 @@ public class DaoBeanDefinitionParser implements BeanDefinitionParser {
 			logger.debug("scanning daos from {}", element.getAttribute(BASE_PACKAGE_ATTRIBUTE));
 			Set<BeanDefinition> definitions = p.findCandidateComponents(element.getAttribute(BASE_PACKAGE_ATTRIBUTE));
 			for(BeanDefinition definition : definitions){
-				logger.debug(definition.getBeanClassName());
+				logger.debug("registing {}", definition.getBeanClassName());
+				registerDao(definition, parserContext);
 			}
-			registerComponents(parserContext.getReaderContext(), definitions, element);
 		}
 		return null;
 	}
 	
-	protected void registerComponents(XmlReaderContext readerContext, Set<BeanDefinition> beanDefinitions, Element element) {
-		for (BeanDefinition beanDef : beanDefinitions) {
-			String beanName = this.beanNameGenerator.generateBeanName(beanDef, readerContext.getRegistry());
-			BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(beanDef, beanName);
-			BeanDefinitionReaderUtils.registerBeanDefinition(definitionHolder, readerContext.getRegistry());
+	private void registerDao(BeanDefinition definition, ParserContext parserContext){
+		try {
+			Class<?> clazz = Class.forName(definition.getBeanClassName());
+//			Class<?> interfaces = 
+//			AbstractBeanDefinition targetBean = new RootBeanDefinition();
+			AbstractBeanDefinition rootDefinition = new GenericBeanDefinition();
+			rootDefinition.setParentName("baseDaoProxy");
+			rootDefinition.getPropertyValues().addPropertyValue("proxyInterfaces", clazz);
+//			rootDefinition.getPropertyValues().addPropertyValue("target",targetBean);	
+			String beanName = this.beanNameGenerator.generateBeanName(definition, parserContext.getRegistry());
+			BeanComponentDefinition bean = new BeanComponentDefinition(rootDefinition, beanName);
+			parserContext.registerBeanComponent(bean);
+			logger.info("{} registed", beanName);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
 		}
 	}
 
