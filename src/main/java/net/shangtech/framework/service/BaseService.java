@@ -35,12 +35,12 @@ public class BaseService<T> implements IBaseService<T> {
     }
 
 	@Override
-    public List<?> findAll() {
+    public List<T> findAll() {
 	    return dao().findAll();
     }
 
 	@Override
-    public List<?> findAll(String orderBy) {
+    public List<T> findAll(String orderBy) {
 	    return dao().findAll(orderBy);
     }
 	

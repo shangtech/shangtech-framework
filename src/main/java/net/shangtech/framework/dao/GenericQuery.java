@@ -11,7 +11,7 @@ public interface GenericQuery<T> {
 	
 	T find(Long id);
 	
-	List<?> findAll();
+	List<T> findAll();
 	
-	List<?> findAll(String orderBy);
+	List<T> findAll(String orderBy);
 }
