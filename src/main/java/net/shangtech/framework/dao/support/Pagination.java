@@ -2,6 +2,8 @@ package net.shangtech.framework.dao.support;
 
 import java.util.List;
 
+import org.springframework.util.Assert;
+
 public class Pagination<T> {
 	
 	private static final Integer DEFAULT_PAGE_SIZE = 10;
@@ -36,7 +38,9 @@ public class Pagination<T> {
 	}
 
 	public void setPageNo(Integer pageNo) {
+		Assert.notNull(pageNo, "can not set a null pageNo");
 		this.pageNo = pageNo;
+		start = limit * (pageNo - 1);
 	}
 
 	public Integer getTotalPage() {
@@ -52,7 +56,9 @@ public class Pagination<T> {
 	}
 
 	public void setTotalCount(Integer totalCount) {
+		Assert.notNull(totalCount, "totalCount can not be null");
 		this.totalCount = totalCount;
+		totalPage = totalCount/limit + 1;
 	}
 
 	public Integer getStart() {
@@ -60,7 +66,9 @@ public class Pagination<T> {
 	}
 
 	public void setStart(Integer start) {
+		Assert.notNull(start, "start of page can not be null");
 		this.start = start;
+		pageNo = start/limit + 1;
 	}
 
 	public Integer getLimit() {
@@ -77,6 +85,12 @@ public class Pagination<T> {
 
 	public void setItems(List<T> items) {
 		this.items = items;
+	}
+	
+	public static void main(String[] args){
+		for(int i = 0; i < 40; i++){
+			System.out.println(i+"/10="+(i/10));
+		}
 	}
 	
 }
