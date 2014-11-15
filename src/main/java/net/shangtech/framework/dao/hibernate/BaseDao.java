@@ -79,7 +79,8 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 		String queryString = "from " + getEntityClass().getSimpleName() + " where 1=1 ";
 		List<Object> values = new ArrayList<Object>();
 		for(Entry<String, Object> entry : properties.entrySet()){
-			queryString += " and " + entry.getKey() + "=?";
+			queryString += " and " + entry.getKey() + "=? ";
+			values.add(entry.getValue());
 		}
 		if(StringUtils.isNotBlank(orderBy)){
 			queryString += " order by " + orderBy;
@@ -88,7 +89,28 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 	}
 	
 	public Pagination<T> findPageByProperties(MapHolder<String> holder, String orderBy, Pagination<T> page){
-		
+		String queryString = "from " + getEntityClass().getSimpleName() + " where 1=1 ";
+		String countString = "select count(o) from " + getEntityClass().getSimpleName() + " where 1=1 ";
+		String whereString = " where 1=1 ";
+		List<Object> values = new ArrayList<>();
+		for(Entry<String, Object> entry : holder.getMap().entrySet()){
+			whereString = " and " + entry.getKey() + "=? ";
+			values.add(entry.getValue());
+		}
+		queryString += whereString;
+		countString += whereString;
+		if(StringUtils.isNoneBlank(orderBy)){
+			queryString += " order by " + orderBy;
+		}
+		List<T> list = (List<T>) getHibernateTemplate().find(countString, values.toArray());
+		page.setItems(list);
+		Object total = gatherByProperties(queryString, values.toArray());
+		if(total == null){
+			page.setTotalCount(0);
+		}
+		else{
+			page.setTotalPage((Integer) total);
+		}
 		return page;
 	}
 	
