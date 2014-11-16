@@ -14,6 +14,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.orm.hibernate4.support.HibernateDaoSupport;
 import org.springframework.util.CollectionUtils;
@@ -118,6 +120,11 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 		Class<?> entityClass = (Class<?>) ((ParameterizedType) getClass()
 				.getGenericSuperclass()).getActualTypeArguments()[0];
 		return entityClass;
+	}
+	
+	@Autowired
+	public void setMySessionFactory(SessionFactory sessionFactory){
+		setSessionFactory(sessionFactory);
 	}
 
 }
