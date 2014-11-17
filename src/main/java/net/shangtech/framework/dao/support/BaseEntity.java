@@ -13,6 +13,10 @@ public class BaseEntity<PK> implements Serializable {
 
 	private static final long serialVersionUID = -456271462579040765L;
 	
+	public static final String ORDER_BY_SORT = " sort ";
+	
+	public static final String COMMA = ",";
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", unique = true, nullable = false)

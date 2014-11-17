@@ -55,7 +55,7 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 		return (List<T>) getHibernateTemplate().find(queryString);
 	}
 	
-	public List<?> findByProperties(MapHolder<String> holder){
+	public List<T> findByProperties(MapHolder<String> holder){
 		return findByProperties(holder, null);
 	}
 	
@@ -76,7 +76,7 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 		});
 	}
 	
-	public List<?> findByProperties(MapHolder<String> holder, String orderBy){
+	public List<T> findByProperties(MapHolder<String> holder, String orderBy){
 		Map<String, Object> properties = holder.getMap();
 		String queryString = "from " + getEntityClass().getSimpleName() + " where 1=1 ";
 		List<Object> values = new ArrayList<Object>();
@@ -87,7 +87,7 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 		if(StringUtils.isNotBlank(orderBy)){
 			queryString += " order by " + orderBy;
 		}
-		return getHibernateTemplate().find(queryString, values.toArray());
+		return (List<T>) getHibernateTemplate().find(queryString, values.toArray());
 	}
 	
 	public Pagination<T> findPageByProperties(MapHolder<String> holder, String orderBy, Pagination<T> page){
