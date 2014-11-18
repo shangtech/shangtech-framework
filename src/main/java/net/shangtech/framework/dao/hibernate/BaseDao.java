@@ -116,6 +116,26 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 		return page;
 	}
 	
+	protected void exec(String hql, Object...values){
+		final String queryString = hql;
+		final Object[] params = values;
+		getHibernateTemplate().execute(new HibernateCallback<Object>(){
+
+			@Override
+            public Object doInHibernate(Session session) throws HibernateException {
+	            Query q = session.createQuery(queryString);
+	            if(params != null){
+	            	for(int i = 0; i < params.length; i++){
+	            		q.setParameter(i, params[i]);
+	            	}
+	            }
+	            q.executeUpdate();
+	            return null;
+            }
+			
+		});
+	}
+	
 	private Class<?> getEntityClass() {
 		Class<?> entityClass = (Class<?>) ((ParameterizedType) getClass()
 				.getGenericSuperclass()).getActualTypeArguments()[0];
