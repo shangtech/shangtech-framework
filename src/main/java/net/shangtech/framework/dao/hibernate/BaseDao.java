@@ -4,7 +4,6 @@ import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import net.shangtech.framework.dao.IBaseDao;
 import net.shangtech.framework.dao.support.MapHolder;
@@ -78,35 +77,35 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 	
 	public List<T> findByProperties(MapHolder<String> holder, String orderBy){
 		Map<String, Object> properties = holder.getMap();
-		String queryString = "from " + getEntityClass().getSimpleName() + " where 1=1 ";
+		StringBuilder queryString = new StringBuilder("from ").append(getEntityClass().getSimpleName()).append(" where 1=1 ");
 		List<Object> values = new ArrayList<Object>();
-		for(Entry<String, Object> entry : properties.entrySet()){
-			queryString += " and " + entry.getKey() + "=? ";
+		properties.entrySet().forEach((entry) -> {
+			queryString.append(" and ").append(entry.getKey()).append("=? ");
 			values.add(entry.getValue());
-		}
+		});
 		if(StringUtils.isNotBlank(orderBy)){
-			queryString += " order by " + orderBy;
+			queryString.append(" order by ").append(orderBy);
 		}
-		return (List<T>) getHibernateTemplate().find(queryString, values.toArray());
+		return (List<T>) getHibernateTemplate().find(queryString.toString(), values.toArray());
 	}
 	
 	public Pagination<T> findPageByProperties(MapHolder<String> holder, String orderBy, Pagination<T> page){
-		String queryString = "from " + getEntityClass().getSimpleName() + " where 1=1 ";
-		String countString = "select count(o) from " + getEntityClass().getSimpleName() + " where 1=1 ";
-		String whereString = " where 1=1 ";
+		StringBuilder queryString = new StringBuilder().append("from ").append(getEntityClass().getSimpleName()).append(" where 1=1 ");
+		StringBuilder countString = new StringBuilder().append("select count(o) from ").append(getEntityClass().getSimpleName()).append(" where 1=1 ");
+		StringBuilder whereString = new StringBuilder(" where 1=1 ");
 		List<Object> values = new ArrayList<>();
-		for(Entry<String, Object> entry : holder.getMap().entrySet()){
-			whereString = " and " + entry.getKey() + "=? ";
+		holder.getMap().entrySet().forEach(entry -> {
+			whereString.append(" and ").append(entry.getKey()).append("=? ");
 			values.add(entry.getValue());
-		}
-		queryString += whereString;
-		countString += whereString;
+		});
+		queryString.append(whereString);
+		countString.append(whereString);
 		if(StringUtils.isNoneBlank(orderBy)){
-			queryString += " order by " + orderBy;
+			queryString.append(" order by ").append(orderBy);
 		}
-		List<T> list = (List<T>) getHibernateTemplate().find(countString, values.toArray());
+		List<T> list = (List<T>) getHibernateTemplate().find(countString.toString(), values.toArray());
 		page.setItems(list);
-		Object total = gatherByProperties(queryString, values.toArray());
+		Object total = gatherByProperties(queryString.toString(), values.toArray());
 		if(total == null){
 			page.setTotalCount(0);
 		}
@@ -119,20 +118,15 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 	protected void exec(String hql, Object...values){
 		final String queryString = hql;
 		final Object[] params = values;
-		getHibernateTemplate().execute(new HibernateCallback<Object>(){
-
-			@Override
-            public Object doInHibernate(Session session) throws HibernateException {
-	            Query q = session.createQuery(queryString);
-	            if(params != null){
-	            	for(int i = 0; i < params.length; i++){
-	            		q.setParameter(i, params[i]);
-	            	}
-	            }
-	            q.executeUpdate();
-	            return null;
+		getHibernateTemplate().execute((session) -> {
+			Query q = session.createQuery(queryString);
+            if(params != null){
+            	for(int i = 0; i < params.length; i++){
+            		q.setParameter(i, params[i]);
+            	}
             }
-			
+            q.executeUpdate();
+            return null;
 		});
 	}
 	
