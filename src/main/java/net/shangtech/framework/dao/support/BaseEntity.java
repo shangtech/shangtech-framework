@@ -19,7 +19,7 @@ public class BaseEntity<PK> implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "ID", unique = true, nullable = false)
+	@Column(name = "id", unique = true, nullable = false)
 	private PK id;
 
 	public PK getId() {

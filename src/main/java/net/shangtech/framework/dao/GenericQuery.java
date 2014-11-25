@@ -2,6 +2,9 @@ package net.shangtech.framework.dao;
 
 import java.util.List;
 
+import net.shangtech.framework.dao.support.Pagination;
+import net.shangtech.framework.dao.support.QueryBean;
+
 public interface GenericQuery<T> {
 	void save(T entity);
 	
@@ -14,4 +17,6 @@ public interface GenericQuery<T> {
 	List<T> findAll();
 	
 	List<T> findAll(String orderBy);
+	
+	Pagination<T> findPage(QueryBean queryBean);
 }

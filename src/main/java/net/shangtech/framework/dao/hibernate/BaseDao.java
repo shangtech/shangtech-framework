@@ -8,6 +8,7 @@ import java.util.Map;
 import net.shangtech.framework.dao.IBaseDao;
 import net.shangtech.framework.dao.support.MapHolder;
 import net.shangtech.framework.dao.support.Pagination;
+import net.shangtech.framework.dao.support.QueryBean;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.HibernateException;
@@ -114,6 +115,12 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 		}
 		return page;
 	}
+	
+	@Override
+    public Pagination<T> findPage(QueryBean queryBean) {
+	    // TODO Auto-generated method stub
+	    return null;
+    }
 	
 	protected void exec(String hql, Object...values){
 		final String queryString = hql;
