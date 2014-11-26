@@ -1,7 +1,7 @@
 package net.shangtech.framework.dao.support;
 
-import org.hibernate.criterion.Example;
+import org.hibernate.criterion.DetachedCriteria;
 
 public abstract class QueryBean {
-	public abstract Example example();
+	public abstract DetachedCriteria criteria();
 }

@@ -4,13 +4,14 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 import net.shangtech.framework.dao.IBaseDao;
+import net.shangtech.framework.dao.support.BaseEntity;
 import net.shangtech.framework.dao.support.Pagination;
 import net.shangtech.framework.dao.support.QueryBean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 @SuppressWarnings("unchecked")
-public class BaseService<T> implements IBaseService<T> {
+public class BaseService<T extends BaseEntity<Long>> implements IBaseService<T> {
 	
 	private static final String FIELD_BASE_DAO = "dao";
 	
@@ -18,7 +19,12 @@ public class BaseService<T> implements IBaseService<T> {
 
 	@Override
     public void save(T entity) {
-		dao().save(entity);
+		if(entity.getId() != null){
+			update(entity);
+		}
+		else{
+			dao().save(entity);
+		}
     }
 
 	@Override
@@ -46,20 +52,20 @@ public class BaseService<T> implements IBaseService<T> {
 	    return dao().findAll(orderBy);
     }
 	
+	@Override
+    public Pagination<T> findPage(QueryBean queryBean, Pagination<T> pagination) {
+	    return dao().findPage(queryBean, pagination);
+    }
+	
 	private IBaseDao<T> dao(){
 		try {
 	        Field field = getClass().getField(FIELD_BASE_DAO);
+	        field.setAccessible(true);
 	        return (IBaseDao<T>) field.get(this);
         } catch (Exception e) {
 	        logger.error("{} does not get a dao field", getClass().getName());
         }
 		return null;
 	}
-
-	@Override
-    public Pagination<T> findPage(QueryBean queryBean) {
-	    // TODO Auto-generated method stub
-	    return null;
-    }
 
 }

@@ -18,5 +18,5 @@ public interface GenericQuery<T> {
 	
 	List<T> findAll(String orderBy);
 	
-	Pagination<T> findPage(QueryBean queryBean);
+	Pagination<T> findPage(QueryBean queryBean, Pagination<T> pagination);
 }

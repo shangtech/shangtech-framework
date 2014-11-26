@@ -11,10 +11,12 @@ import net.shangtech.framework.dao.support.Pagination;
 import net.shangtech.framework.dao.support.QueryBean;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Projections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.orm.hibernate4.support.HibernateDaoSupport;
@@ -117,15 +119,21 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 	}
 	
 	@Override
-    public Pagination<T> findPage(QueryBean queryBean) {
-	    // TODO Auto-generated method stub
-	    return null;
+    public Pagination<T> findPage(QueryBean queryBean, Pagination<T> pagination) {
+	    return getHibernateTemplate().execute(session -> {
+	    	Criteria criteria = queryBean.criteria().getExecutableCriteria(session);
+	    	Integer totalCount = (Integer) criteria.setProjection(Projections.rowCount()).uniqueResult();
+	    	pagination.setTotalCount(totalCount);
+	    	List<T> items = criteria.setFirstResult(pagination.getStart()).setMaxResults(pagination.getLimit()).list();
+	    	pagination.setItems(items);
+	    	return pagination;
+	    });
     }
 	
 	protected void exec(String hql, Object...values){
 		final String queryString = hql;
 		final Object[] params = values;
-		getHibernateTemplate().execute((session) -> {
+		getHibernateTemplate().execute(session -> {
 			Query q = session.createQuery(queryString);
             if(params != null){
             	for(int i = 0; i < params.length; i++){
