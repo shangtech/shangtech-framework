@@ -26,17 +26,17 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 
 	@Override
     public void save(T entity) {
-	    getHibernateTemplate().save(entity);
+	    getSessionFactory().openSession().save(entity);
     }
 
 	@Override
     public void delete(long id) {
-		getHibernateTemplate().delete(find(id));
+		getSessionFactory().openSession().delete(find(id));
     }
 
 	@Override
     public void update(T entity) {
-		getHibernateTemplate().update(entity);
+		getSessionFactory().openSession().update(entity);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 	}
 	
 	public Object gatherByProperties(final String queryString, final Object...values){
-		return getHibernateTemplate().execute(new HibernateCallback<Object>(){
+		return getHibernateTemplate().executeWithNativeSession(new HibernateCallback<Object>(){
 			@Override
 			public Object doInHibernate(Session session) throws HibernateException {
 				Query query = session.createQuery(queryString);
@@ -120,12 +120,15 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 	
 	@Override
     public Pagination<T> findPage(QueryBean queryBean, Pagination<T> pagination) {
-	    return getHibernateTemplate().execute(session -> {
+	    return getHibernateTemplate().executeWithNativeSession(session -> {
 	    	Criteria criteria = queryBean.criteria().getExecutableCriteria(session);
-	    	Integer totalCount = (Integer) criteria.setProjection(Projections.rowCount()).uniqueResult();
-	    	pagination.setTotalCount(totalCount);
+	    	
 	    	List<T> items = criteria.setFirstResult(pagination.getStart()).setMaxResults(pagination.getLimit()).list();
 	    	pagination.setItems(items);
+	    	
+	    	Long totalCount = (Long) criteria.setProjection(Projections.rowCount()).uniqueResult();
+	    	pagination.setTotalCount(totalCount.intValue());
+	    	
 	    	return pagination;
 	    });
     }

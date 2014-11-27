@@ -59,11 +59,11 @@ public class BaseService<T extends BaseEntity<Long>> implements IBaseService<T> 
 	
 	private IBaseDao<T> dao(){
 		try {
-	        Field field = getClass().getField(FIELD_BASE_DAO);
+	        Field field = getClass().getDeclaredField(FIELD_BASE_DAO);
 	        field.setAccessible(true);
 	        return (IBaseDao<T>) field.get(this);
         } catch (Exception e) {
-	        logger.error("{} does not get a dao field", getClass().getName());
+	        logger.error(getClass().getName() + " does not get a dao field", e);
         }
 		return null;
 	}
