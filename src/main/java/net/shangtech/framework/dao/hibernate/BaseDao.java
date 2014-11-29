@@ -12,45 +12,28 @@ import net.shangtech.framework.dao.support.QueryBean;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
-import org.hibernate.FlushMode;
 import org.hibernate.Query;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
-import org.springframework.orm.hibernate4.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.util.CollectionUtils;
 @SuppressWarnings("unchecked")
 public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 
 	@Override
     public void save(T entity) {
-	    getHibernateTemplate().executeWithNativeSession(session -> {
-	    	session.setFlushMode(FlushMode.COMMIT);
-	    	checkWriteOperationAllowed(session);
-			return session.save(entity);
-	    });
+	    getHibernateTemplate().save(entity);
     }
 
 	@Override
     public void delete(long id) {
-		getHibernateTemplate().executeWithNativeSession(session -> {
-	    	session.setFlushMode(FlushMode.COMMIT);
-	    	checkWriteOperationAllowed(session);
-			session.delete(find(id));
-			return null;
-	    });
+		getHibernateTemplate().delete(find(id));
     }
 
 	@Override
     public void update(T entity) {
-		getHibernateTemplate().executeWithNativeSession(session -> {
-	    	session.setFlushMode(FlushMode.COMMIT);
-	    	checkWriteOperationAllowed(session);
-			session.update(entity);
-			return null;
-	    });
+		getHibernateTemplate().update(entity);
     }
 
     @Override
@@ -168,19 +151,6 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 	@Autowired
 	public void setMySessionFactory(SessionFactory sessionFactory){
 		setSessionFactory(sessionFactory);
-	}
-	
-	/**
-	 * copy from hibernateTemplate
-	 * @param session
-	 * @throws InvalidDataAccessApiUsageException
-	 */
-	private void checkWriteOperationAllowed(Session session) throws InvalidDataAccessApiUsageException {
-		if (getHibernateTemplate().isCheckWriteOperations() && session.getFlushMode().lessThan(FlushMode.COMMIT)) {
-			throw new InvalidDataAccessApiUsageException(
-					"Write operations are not allowed in read-only mode (FlushMode.MANUAL): "+
-					"Turn your Session into FlushMode.COMMIT/AUTO or remove 'readOnly' marker from transaction definition.");
-		}
 	}
 
 }

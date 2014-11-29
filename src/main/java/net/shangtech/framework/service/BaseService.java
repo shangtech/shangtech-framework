@@ -1,6 +1,7 @@
 package net.shangtech.framework.service;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 import net.shangtech.framework.dao.IBaseDao;
@@ -8,8 +9,10 @@ import net.shangtech.framework.dao.support.BaseEntity;
 import net.shangtech.framework.dao.support.Pagination;
 import net.shangtech.framework.dao.support.QueryBean;
 
+import org.hibernate.criterion.DetachedCriteria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
 @SuppressWarnings("unchecked")
 public class BaseService<T extends BaseEntity<Long>> implements IBaseService<T> {
 	
@@ -18,6 +21,7 @@ public class BaseService<T extends BaseEntity<Long>> implements IBaseService<T> 
 	private static final Logger logger = LoggerFactory.getLogger(BaseService.class);
 
 	@Override
+	@Transactional
     public void save(T entity) {
 		if(entity.getId() != null){
 			update(entity);
@@ -53,6 +57,13 @@ public class BaseService<T extends BaseEntity<Long>> implements IBaseService<T> 
     }
 	
 	@Override
+    public Pagination<T> findAllByPage(Pagination<T> pagination) {
+	    return dao().findPage(() -> {
+	    	return DetachedCriteria.forClass(getEntityClass());
+	    }, pagination);
+    }
+	
+	@Override
     public Pagination<T> findPage(QueryBean queryBean, Pagination<T> pagination) {
 	    return dao().findPage(queryBean, pagination);
     }
@@ -66,6 +77,12 @@ public class BaseService<T extends BaseEntity<Long>> implements IBaseService<T> 
 	        logger.error(getClass().getName() + " does not get a dao field", e);
         }
 		return null;
+	}
+	
+	private Class<?> getEntityClass() {
+		Class<?> entityClass = (Class<?>) ((ParameterizedType) getClass()
+				.getGenericSuperclass()).getActualTypeArguments()[0];
+		return entityClass;
 	}
 
 }

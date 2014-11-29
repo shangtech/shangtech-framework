@@ -12,7 +12,7 @@ public class AjaxResponse implements Serializable {
 	
 	private String code;
 	
-	private String data;
+	private Object data;
 	
 	public static AjaxResponse instance(){
 		AjaxResponse ajaxResponse = new AjaxResponse();
@@ -44,11 +44,11 @@ public class AjaxResponse implements Serializable {
 		this.code = code;
 	}
 
-	public String getData() {
+	public Object getData() {
 		return data;
 	}
 
-	public void setData(String data) {
+	public void setData(Object data) {
 		this.data = data;
 	}
 

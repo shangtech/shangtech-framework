@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DaoGenerator {
-	public static final String SRC_PATH = "E:\\git\\eshop\\shop-base\\src\\main\\java\\";
+	public static final String SRC_PATH = "/Users/tsingheng/git/studio-site/studio-site-base/src/main/java/";
 	public static void main(String[] args){
 		File rootPath = new File(SRC_PATH);
 		List<File> list = new ArrayList<>();
@@ -42,7 +42,11 @@ public class DaoGenerator {
 			if(!daoImplPath.exists()){
 				daoImplPath.mkdir();
 			}
-			File serviceImplPath = new File(dir, "service/impl");
+			File servicePath = new File(dir, "service");
+			if(!servicePath.exists()){
+				servicePath.mkdir();
+			}
+			File serviceImplPath = new File(servicePath, "impl");
 			if(!serviceImplPath.exists()){
 				serviceImplPath.mkdirs();
 			}
@@ -50,7 +54,7 @@ public class DaoGenerator {
 			if(entities != null){
 				String path = file.getParent();
 				path = path.replace(DaoGenerator.SRC_PATH, "");
-				String packageStr = path.replaceAll("\\\\", ".");
+				String packageStr = path.replaceAll("/", ".");
 				for(File entity : entities){
 					if(entity.isFile() && entity.getName() != null && entity.getName().endsWith(".java")){
 						String name = entity.getName();
@@ -68,6 +72,19 @@ public class DaoGenerator {
 								System.out.println("create file " + daoImpl.getAbsolutePath());
 								daoImpl.createNewFile();
 								new DaoImpl(daoImpl, name, packageStr).write();
+							}
+							File service = new File(servicePath, "I" + name + "Service.java");
+							if(!service.exists()){
+								System.out.println("create file " + service.getAbsolutePath());
+								service.createNewFile();
+								new Service(service, name, packageStr).write();
+							}
+							
+							File serviceImpl = new File(serviceImplPath, name + "Service.java");
+							if(!serviceImpl.exists()){
+								System.out.println("create file " + serviceImpl.getAbsolutePath());
+								serviceImpl.createNewFile();
+								new ServiceImpl(serviceImpl, name, packageStr).write();
 							}
 						} catch (Exception e){
 							e.printStackTrace();
@@ -127,6 +144,70 @@ class DaoImpl{
 		writer.append("\r\n");
 		writer.append("@Repository\r\n");
 		writer.append("public class " + entity + "Dao extends BaseDao<" + entity + "> implements I" + entity + "Dao {\r\n");
+		
+		writer.append("\r\n");
+		writer.append("}\r\n");
+		writer.flush();
+		writer.close();
+	}
+}
+class Service{
+	private File service;
+	private String entity;
+	private String packageStr;
+	public Service(File service, String entity, String packageStr){
+		this.service = service;
+		this.entity = entity;
+		this.packageStr = packageStr;
+	}
+	public void write() throws IOException{
+		FileWriter writer = new FileWriter(service, true);
+		writer.append("package " + packageStr + ".service;\r\n");
+		
+		writer.append("\r\n");
+		writer.append("import net.shangtech.framework.service.IBaseService;\r\n");
+		writer.append("import " + packageStr + ".entity." + entity + ";\r\n");
+		
+		writer.append("\r\n");
+		writer.append("public interface I" + entity + "Service extends IBaseService<" + entity + "> {\r\n");
+		
+		writer.append("\r\n");
+		writer.append("}\r\n");
+		
+		writer.flush();
+		writer.close();
+	}
+}
+class ServiceImpl{
+	private File serviceImpl;
+	private String entity;
+	private String packageStr;
+	public ServiceImpl(File serviceImpl, String entity, String packageStr){
+		this.serviceImpl = serviceImpl;
+		this.entity = entity;
+		this.packageStr = packageStr;
+	}
+	public void write() throws IOException{
+		FileWriter writer = new FileWriter(serviceImpl, true);
+		writer.append("package " + packageStr + ".service.impl;\r\n");
+		
+		writer.append("\r\n");
+		writer.append("import net.shangtech.framework.service.BaseService;\r\n");
+		writer.append("import " + packageStr + ".service.I" + entity + "Service;\r\n");
+		writer.append("import " + packageStr + ".entity." + entity + ";\r\n");
+		writer.append("import " + packageStr + ".dao.I" + entity + "Dao;\r\n");
+		writer.append("import org.springframework.beans.factory.annotation.Autowired;\r\n");
+		writer.append("import org.springframework.stereotype.Service;\r\n");
+		writer.append("import org.springframework.transaction.annotation.Transactional;\r\n");
+		
+		writer.append("\r\n");
+		writer.append("@Service\r\n");
+		writer.append("@Transactional\r\n");
+		writer.append("public class " + entity + "Service extends BaseService<" + entity + "> implements I" + entity + "Service {\r\n");
+		
+		writer.append("\r\n");
+		writer.append("\t@Autowired private I" + entity + "Dao dao;\r\n");
+		writer.append("\r\n");
 		
 		writer.append("\r\n");
 		writer.append("}\r\n");
