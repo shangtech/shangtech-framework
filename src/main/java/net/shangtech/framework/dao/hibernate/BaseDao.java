@@ -11,7 +11,6 @@ import net.shangtech.framework.dao.support.Pagination;
 import net.shangtech.framework.dao.support.QueryBean;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
@@ -115,12 +114,11 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 	@Override
     public Pagination<T> findPage(QueryBean queryBean, Pagination<T> pagination) {
 	    return getHibernateTemplate().executeWithNativeSession(session -> {
-	    	Criteria criteria = queryBean.criteria().getExecutableCriteria(session);
 	    	
-	    	List<T> items = criteria.setFirstResult(pagination.getStart()).setMaxResults(pagination.getLimit()).list();
+	    	List<T> items = queryBean.criteria().getExecutableCriteria(session).setFirstResult(pagination.getStart()).setMaxResults(pagination.getLimit()).list();
 	    	pagination.setItems(items);
 	    	
-	    	Long totalCount = (Long) criteria.setProjection(Projections.rowCount()).uniqueResult();
+	    	Long totalCount = (Long) queryBean.criteria().getExecutableCriteria(session).setProjection(Projections.rowCount()).uniqueResult();
 	    	pagination.setTotalCount(totalCount.intValue());
 	    	
 	    	return pagination;

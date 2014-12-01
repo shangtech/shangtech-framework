@@ -93,4 +93,12 @@ public class Pagination<T> {
 		}
 	}
 	
+	public boolean isFisrt(){
+		return pageNo == 1;
+	}
+	
+	public boolean isLast(){
+		return pageNo == totalPage;
+	}
+	
 }

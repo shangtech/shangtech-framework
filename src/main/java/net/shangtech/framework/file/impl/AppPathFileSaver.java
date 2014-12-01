@@ -24,10 +24,10 @@ public class AppPathFileSaver extends AbstractFileSaver implements FileSaver {
 	
 	private static final String FILE_DIR = "uploadfiles" + File.separatorChar;
 	
-	static{
+	public AppPathFileSaver() {
 		String srcPath = AppPathFileSaver.class.getClassLoader().getResource("/").getPath();
 		APP_DIR = srcPath.substring(0, srcPath.indexOf("WEB-INF"));
-	}
+    }
 
 	@Override
     public String save(GenericFile genericFile) {
