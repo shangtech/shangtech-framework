@@ -7,6 +7,8 @@ import net.shangtech.framework.dao.support.Pagination;
 
 public interface IBaseDao<T> extends GenericQuery<T> {
 	List<T> findByProperties(MapHolder<String> holder);
+	
+	T findOneByProperties(MapHolder<String> holder);
 
 	Object gatherByProperties(final String queryString, final Object... values);
 

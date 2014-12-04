@@ -57,6 +57,14 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 		return findByProperties(holder, null);
 	}
 	
+	public T findOneByProperties(MapHolder<String> holder){
+		List<T> list = findByProperties(holder);
+		if(!CollectionUtils.isEmpty(list)){
+			return list.get(0);
+		}
+		return null;
+	}
+	
 	public Object gatherByProperties(final String queryString, final Object...values){
 		return getHibernateTemplate().executeWithNativeSession(session -> {
 			Query query = session.createQuery(queryString);
