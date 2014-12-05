@@ -94,8 +94,8 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 	}
 	
 	public Pagination<T> findPageByProperties(MapHolder<String> holder, String orderBy, Pagination<T> page){
-		StringBuilder queryString = new StringBuilder().append("from ").append(getEntityClass().getSimpleName()).append(" where 1=1 ");
-		StringBuilder countString = new StringBuilder().append("select count(o) from ").append(getEntityClass().getSimpleName()).append(" where 1=1 ");
+		StringBuilder queryString = new StringBuilder().append("from ").append(getEntityClass().getSimpleName());
+		StringBuilder countString = new StringBuilder().append("select count(o) from ").append(getEntityClass().getSimpleName()).append(" o ");
 		StringBuilder whereString = new StringBuilder(" where 1=1 ");
 		List<Object> values = new ArrayList<>();
 		holder.getMap().entrySet().forEach(entry -> {
@@ -107,14 +107,14 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 		if(StringUtils.isNoneBlank(orderBy)){
 			queryString.append(" order by ").append(orderBy);
 		}
-		List<T> list = (List<T>) getHibernateTemplate().find(countString.toString(), values.toArray());
+		List<T> list = (List<T>) getHibernateTemplate().find(queryString.toString(), values.toArray());
 		page.setItems(list);
-		Object total = gatherByProperties(queryString.toString(), values.toArray());
+		Object total = gatherByProperties(countString.toString(), values.toArray());
 		if(total == null){
 			page.setTotalCount(0);
 		}
 		else{
-			page.setTotalPage((Integer) total);
+			page.setTotalPage(((Long) total).intValue());
 		}
 		return page;
 	}
