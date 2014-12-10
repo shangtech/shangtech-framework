@@ -77,6 +77,7 @@ public class Pagination<T> {
 
 	public void setLimit(Integer limit) {
 		this.limit = limit;
+		start = limit * (pageNo - 1);
 	}
 
 	public List<T> getItems() {
@@ -93,11 +94,11 @@ public class Pagination<T> {
 		}
 	}
 	
-	public boolean isFisrt(){
+	public boolean getIsFirst(){
 		return pageNo == 1;
 	}
 	
-	public boolean isLast(){
+	public boolean getIsLast(){
 		return pageNo == totalPage;
 	}
 	
