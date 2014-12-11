@@ -20,14 +20,19 @@ public class AppPathFileSaver extends AbstractFileSaver implements FileSaver {
 	
 	private FileNameGenerator fileNameGenerator;
 	
-	private static String APP_DIR;
+	private static final String FILE_DIR = "uploadfiles" + FileNameGenerator.DIR_SEPARATOR_CHAR;
 	
-	private static final String FILE_DIR = "uploadfiles" + File.separatorChar;
+	/** 文件保存路径,默认是web目录uploadfiles **/
+	private String filePath;
 	
 	public AppPathFileSaver() {
 		String srcPath = AppPathFileSaver.class.getClassLoader().getResource("/").getPath();
-		APP_DIR = srcPath.substring(0, srcPath.indexOf("WEB-INF"));
+		filePath = srcPath.substring(0, srcPath.indexOf("WEB-INF")) + FILE_DIR;
     }
+	
+	public AppPathFileSaver(String filePath){
+		this.filePath = filePath;
+	}
 
 	@Override
     public String save(GenericFile genericFile) {
@@ -35,7 +40,7 @@ public class AppPathFileSaver extends AbstractFileSaver implements FileSaver {
 			throw new RuntimeException("no file name generator configed");
 		}
 		String path = fileNameGenerator.gen() + genericFile.getExtend();
-		File file = new File(APP_DIR + FILE_DIR, path);
+		File file = new File(filePath, path);
 		while(file.exists()){
 			path = fileNameGenerator.gen() + genericFile.getExtend();
 			file = new File(FILE_DIR, path);
@@ -82,6 +87,14 @@ public class AppPathFileSaver extends AbstractFileSaver implements FileSaver {
 
 	public void setFileNameGenerator(FileNameGenerator fileNameGenerator) {
 		this.fileNameGenerator = fileNameGenerator;
+	}
+
+	public String getFilePath() {
+		return filePath;
+	}
+
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
 	}
 
 }

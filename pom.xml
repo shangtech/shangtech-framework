@@ -17,6 +17,11 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>com.aliyun.openservices</groupId>
+			<artifactId>aliyun-openservices</artifactId>
+			<version>OTS-2.0.4</version>
+		</dependency>
+		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
 			<version>3.6.9.Final</version>
@@ -81,4 +86,12 @@
 			</plugin>
 		</plugins>
 	</build>
+	
+	<repositories>
+		<repository>
+			<id>oschina</id>
+			<name>oschina</name>
+			<url>http://maven.oschina.net/content/groups/public/</url>
+		</repository>
+	</repositories>
 </project>

@@ -1,6 +1,5 @@
 package net.shangtech.framework.file.impl;
 
-import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -16,9 +15,9 @@ public class DateFileNameGenerator implements FileNameGenerator {
     public String gen() {
 		Calendar c = Calendar.getInstance();
 		StringBuilder sb = new StringBuilder();
-		sb.append(c.get(Calendar.YEAR)).append(File.separatorChar);
-		sb.append(c.get(Calendar.MONTH)).append(File.separatorChar);
-		sb.append(DATE_FORMAT.format(c.getTime())).append(File.separatorChar);
+		sb.append(c.get(Calendar.YEAR)).append(FileNameGenerator.DIR_SEPARATOR_CHAR);
+		sb.append(c.get(Calendar.MONTH)).append(FileNameGenerator.DIR_SEPARATOR_CHAR);
+		sb.append(DATE_FORMAT.format(c.getTime())).append(FileNameGenerator.DIR_SEPARATOR_CHAR);
 		sb.append(TIME_FORMAT.format(c.getTime()));
 	    return sb.toString();
     }

@@ -9,6 +9,8 @@ public class GenericFile {
 	private String name;
 	
 	private String extend;
+	
+	private long length;
 
 	public InputStream getIs() {
 		return is;
@@ -32,6 +34,14 @@ public class GenericFile {
 
 	public void setExtend(String extend) {
 		this.extend = extend;
+	}
+
+	public long getLength() {
+		return length;
+	}
+
+	public void setLength(long length) {
+		this.length = length;
 	}
 	
 }
