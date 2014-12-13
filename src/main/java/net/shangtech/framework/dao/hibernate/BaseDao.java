@@ -22,7 +22,7 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 
 	@Override
     public void save(T entity) {
-	    getHibernateTemplate().save(entity);
+	    getHibernateTemplate().save(getEntityClass().getName(), entity);
     }
 
 	@Override
