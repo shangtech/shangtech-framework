@@ -107,14 +107,22 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 		if(StringUtils.isNoneBlank(orderBy)){
 			queryString.append(" order by ").append(orderBy);
 		}
-		List<T> list = (List<T>) getHibernateTemplate().find(queryString.toString(), values.toArray());
+		List<T> list = (List<T>) getHibernateTemplate().executeWithNativeSession(session -> {
+			Query query = session.createQuery(queryString.toString());
+			for(int i = 0; i < values.size(); i++){
+				query.setParameter(i, values.get(i));
+			}
+			query.setFirstResult(page.getStart());
+			query.setMaxResults(page.getLimit());
+			return query.list();
+		});
 		page.setItems(list);
 		Object total = gatherByProperties(countString.toString(), values.toArray());
 		if(total == null){
 			page.setTotalCount(0);
 		}
 		else{
-			page.setTotalPage(((Long) total).intValue());
+			page.setTotalCount(((Long) total).intValue());
 		}
 		return page;
 	}
