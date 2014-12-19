@@ -18,6 +18,9 @@ public class AliOSSFileSaverTest {
 	public void saveTest() throws IOException{
 		GenericFile genericFile = new GenericFile();
 		File file = new File("D:\\Koala.jpg");
+		if(!file.exists()){
+			return;
+		}
 		genericFile.setLength(file.length());
 		InputStream is = new FileInputStream(file);
 		genericFile.setIs(is);
