@@ -167,4 +167,24 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 		setSessionFactory(sessionFactory);
 	}
 
+	@Override
+    public List<T> findByProperty(String propertyName, Object value) {
+	    return findByProperties(MapHolder.instance(propertyName, value));
+    }
+
+	@Override
+    public T findOneByProperty(String propertyName, Object value) {
+	    return findOneByProperties(MapHolder.instance(propertyName, value));
+    }
+
+	@Override
+    public Pagination<T> findPageByProperties(MapHolder<String> holder, Pagination<T> page) {
+	    return findPageByProperties(holder, null, page);
+    }
+
+	@Override
+    public Pagination<T> findPageByProperties(String prpertyName, Object value, Pagination<T> page) {
+	    return findPageByProperties(MapHolder.instance(prpertyName, value), page);
+    }
+
 }

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DaoGenerator {
-	public static final String SRC_PATH = "/Users/tsingheng/git/studio-site/studio-site-base/src/main/java/";
+	public static final String SRC_PATH = "/Users/tsingheng/git/weixin-platform/weixin-core/src/main/java/";
 	public static void main(String[] args){
 		File rootPath = new File(SRC_PATH);
 		List<File> list = new ArrayList<>();
