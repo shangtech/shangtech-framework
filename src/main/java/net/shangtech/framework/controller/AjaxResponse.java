@@ -1,6 +1,7 @@
 package net.shangtech.framework.controller;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class AjaxResponse implements Serializable {
 	
@@ -13,6 +14,8 @@ public class AjaxResponse implements Serializable {
 	private String code;
 	
 	private Object data;
+	
+	private List<BindingError> errors;
 	
 	public static AjaxResponse instance(){
 		AjaxResponse ajaxResponse = new AjaxResponse();
@@ -50,6 +53,14 @@ public class AjaxResponse implements Serializable {
 
 	public void setData(Object data) {
 		this.data = data;
+	}
+
+	public List<BindingError> getErrors() {
+		return errors;
+	}
+
+	public void setErrors(List<BindingError> errors) {
+		this.errors = errors;
 	}
 
 }
