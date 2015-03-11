@@ -20,6 +20,10 @@ public class Pagination<T> {
 	
 	private List<T> items;
 	
+	private Integer page;
+	
+	private Integer rows;
+	
 	public Pagination(){
 		limit = DEFAULT_PAGE_SIZE;
 		setPageNo(1);
@@ -100,6 +104,24 @@ public class Pagination<T> {
 	
 	public boolean getIsLast(){
 		return pageNo == totalPage;
+	}
+
+	public Integer getPage() {
+		return page;
+	}
+
+	public void setPage(Integer page) {
+		this.page = page;
+		this.setPageNo(page);
+	}
+
+	public Integer getRows() {
+		return rows;
+	}
+
+	public void setRows(Integer rows) {
+		this.rows = rows;
+		this.setLimit(rows);
 	}
 	
 }
