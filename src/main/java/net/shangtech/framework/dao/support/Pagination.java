@@ -62,7 +62,7 @@ public class Pagination<T> {
 	public void setTotalCount(Integer totalCount) {
 		Assert.notNull(totalCount, "totalCount can not be null");
 		this.totalCount = totalCount;
-		totalPage = totalCount/limit + 1;
+		totalPage = new Double(Math.ceil(totalCount/limit)).intValue();
 	}
 
 	public Integer getStart() {
