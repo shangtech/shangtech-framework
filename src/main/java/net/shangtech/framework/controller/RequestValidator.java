@@ -2,8 +2,6 @@ package net.shangtech.framework.controller;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.validation.Valid;
 
@@ -32,7 +30,7 @@ public class RequestValidator {
 				if(result.hasErrors()){
 					AjaxResponse ajaxResponse = AjaxResponse.instance();
 					ajaxResponse.setSuccess(false);
-					ajaxResponse.setErrors(processErrors(result));
+					processErrors(ajaxResponse, result);
 					return ajaxResponse;
 				}
 			}
@@ -52,14 +50,9 @@ public class RequestValidator {
 		return false;
 	}
 	
-	private List<BindingError> processErrors(BindingResult result){
-		List<BindingError> errors = new ArrayList<>();
+	private void processErrors(AjaxResponse response, BindingResult result){
 		for(FieldError e : result.getFieldErrors()){
-			BindingError error = new BindingError();
-			error.setName(e.getField());
-			error.setMessage(e.getDefaultMessage());
-			errors.add(error);
+			response.addError(e.getField(), e.getDefaultMessage());
 		}
-		return errors;
 	}
 }

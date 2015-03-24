@@ -2,10 +2,8 @@ package net.shangtech.framework.controller.validation;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.LinkedList;
-import java.util.List;
 
-import net.shangtech.framework.controller.BindingError;
+import net.shangtech.framework.controller.AjaxResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -30,7 +28,7 @@ public class RequestValidatorAspect {
 		MethodSignature signature = (MethodSignature) pjp.getSignature();
 		Method method = signature.getMethod();
 		//自动校验方法必须有@RresponseBody注解,且声明返回类型为Object
-		if(!Object.class.equals(method.getReturnType())){
+		if(!AjaxResponse.class.equals(method.getReturnType())){
 			throw new RequestValidMethodException(method.getName() + " must be defined return an Object ");
 		}
 		checkMethodAnnotation(method);
@@ -61,14 +59,9 @@ public class RequestValidatorAspect {
 
 	private void processErrors(BindingResult errors, RequestInvalidResponse response) {
 	    response.setHasErrors(true);
-	    List<BindingError> list = new LinkedList<BindingError>();
 	    for(FieldError error : errors.getFieldErrors()){
-	    	BindingError be = new BindingError();
-	    	be.setName(error.getField());
-	    	be.setMessage(error.getDefaultMessage());
-	    	list.add(be);
+	    	response.addError(error.getField(), error.getDefaultMessage());
 	    }
-	    response.getErrors().addAll(list);
     }
 
 	private String getObjectName(Annotation[] annotations) {

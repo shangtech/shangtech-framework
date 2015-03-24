@@ -1,7 +1,8 @@
 package net.shangtech.framework.controller;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AjaxResponse implements Serializable {
 	
@@ -15,7 +16,7 @@ public class AjaxResponse implements Serializable {
 	
 	private Object data;
 	
-	private List<BindingError> errors;
+	private Map<String, String> errors = new HashMap<String, String>();
 	
 	public static AjaxResponse instance(){
 		AjaxResponse ajaxResponse = new AjaxResponse();
@@ -55,12 +56,15 @@ public class AjaxResponse implements Serializable {
 		this.data = data;
 	}
 
-	public List<BindingError> getErrors() {
+	public Map<String, String> getErrors() {
 		return errors;
 	}
 
-	public void setErrors(List<BindingError> errors) {
+	public void setErrors(Map<String, String> errors) {
 		this.errors = errors;
 	}
 
+	public void addError(String name, String message){
+		
+	}
 }
