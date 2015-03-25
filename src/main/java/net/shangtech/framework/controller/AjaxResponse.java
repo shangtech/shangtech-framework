@@ -65,6 +65,6 @@ public class AjaxResponse implements Serializable {
 	}
 
 	public void addError(String name, String message){
-		
+		this.errors.put(name, message);
 	}
 }

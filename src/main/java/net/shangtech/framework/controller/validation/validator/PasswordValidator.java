@@ -16,6 +16,9 @@ public class PasswordValidator implements ConstraintValidator<net.shangtech.fram
 
 	@Override
     public boolean isValid(Password value, ConstraintValidatorContext context) {
+		if(value == null){
+			return true;
+		}
 	    return StringUtils.equals(value.getPassword(), value.getPassconfirm());
     }
 	

@@ -30,4 +30,12 @@
     	<function-signature>double ceil(double)</function-signature>
     	<example>${math:ceil(1.1)</example>
     </function>
+    
+    <function>
+    	<description>取随机数</description>
+    	<name>random</name>
+    	<function-class>java.lang.Math</function-class>
+    	<function-signature>double random()</function-signature>
+    	<example>${math:random()</example>
+    </function>
 </taglib>
