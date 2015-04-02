@@ -10,7 +10,7 @@
     <function>
     	<description>取最大值</description>
     	<name>max</name>
-    	<function-class>net.shangtech.framework.jsp.taglibs.ShangTechFunctions</function-class>
+    	<function-class>net.shangtech.framework.web.jsp.taglibs.ShangTechFunctions</function-class>
     	<function-signature>int max(int, int)</function-signature>
     	<example>${sfn:max(1, 2)</example>
     </function>
@@ -18,7 +18,7 @@
     <function>
     	<description>取最小值</description>
     	<name>min</name>
-    	<function-class>net.shangtech.framework.jsp.taglibs.ShangTechFunctions</function-class>
+    	<function-class>net.shangtech.framework.web.jsp.taglibs.ShangTechFunctions</function-class>
     	<function-signature>int min(int, int)</function-signature>
     	<example>${sfn:min(1, 2)</example>
     </function>
@@ -26,7 +26,7 @@
     <function>
     	<description>小数进位</description>
     	<name>ceil</name>
-    	<function-class>net.shangtech.framework.jsp.taglibs.ShangTechFunctions</function-class>
+    	<function-class>net.shangtech.framework.web.jsp.taglibs.ShangTechFunctions</function-class>
     	<function-signature>double ceil(double)</function-signature>
     	<example>${sfn:ceil(1.1)</example>
     </function>

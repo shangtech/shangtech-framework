@@ -16,7 +16,7 @@ public class AjaxResponse implements Serializable {
 	
 	private Object data;
 	
-	private Map<String, String> errors = new HashMap<String, String>();
+	private Map<String, String> errors = null;
 	
 	public static AjaxResponse instance(){
 		AjaxResponse ajaxResponse = new AjaxResponse();
@@ -65,6 +65,9 @@ public class AjaxResponse implements Serializable {
 	}
 
 	public void addError(String name, String message){
+		if(errors == null){
+			errors = new HashMap<String, String>();
+		}
 		this.errors.put(name, message);
 	}
 }
