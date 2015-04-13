@@ -58,9 +58,12 @@ public class BaseService<T extends BaseEntity<Long>> implements IBaseService<T> 
 	
 	@Override
     public Pagination<T> findAllByPage(Pagination<T> pagination) {
-	    return dao().findPage(() -> {
-	    	return DetachedCriteria.forClass(getEntityClass());
-	    }, pagination);
+	    return dao().findPage(new QueryBean() {
+			@Override
+			public DetachedCriteria criteria() {
+				return DetachedCriteria.forClass(getEntityClass());
+			}
+		}, pagination);
     }
 	
 	@Override

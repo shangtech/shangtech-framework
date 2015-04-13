@@ -15,13 +15,13 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.beanvalidation.OptionalValidatorFactoryBean;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Aspect
 public class RequestValidatorAspect {
 	
-	@Autowired private OptionalValidatorFactoryBean validatorFactoryBean;
+	@Autowired private LocalValidatorFactoryBean validatorFactoryBean;
 
 	@Around("@annotation(net.shangtech.framework.web.controller.validation.RequestValid)")
 	public Object validate(ProceedingJoinPoint pjp) throws Throwable{
