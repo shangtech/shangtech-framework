@@ -109,7 +109,7 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 		final int start = page.getStart();
 		final int limit = page.getLimit();
 		for(Entry<String, Object> entry : holder.getMap().entrySet()){
-			queryString.append(" and ").append(entry.getKey()).append("=? ");
+			whereString.append(" and ").append(entry.getKey()).append("=? ");
 			values.add(entry.getValue());
 		}
 		queryString.append(whereString);
