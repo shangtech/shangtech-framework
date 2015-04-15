@@ -208,4 +208,13 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 	    return findPageByProperties(MapHolder.instance(prpertyName, value), page);
     }
 
+	@Override
+    public T findOneByHql(String hql, Object... objects) {
+	    List<T> list = getHibernateTemplate().find(hql, objects);
+	    if(CollectionUtils.isEmpty(list)){
+	    	return null;
+	    }
+	    return list.get(0);
+    }
+
 }
