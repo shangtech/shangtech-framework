@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 
 import net.shangtech.framework.orm.dao.IBaseDao;
 import net.shangtech.framework.orm.dao.XmlSqlQueryProvider;
+import net.shangtech.framework.orm.dao.support.AnnotationBeanResultTransformer;
 import net.shangtech.framework.orm.dao.support.MapHolder;
 import net.shangtech.framework.orm.dao.support.Pagination;
 import net.shangtech.framework.orm.dao.support.QueryBean;
@@ -19,7 +20,6 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
-import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
@@ -235,7 +235,7 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 						query.setParameter(name, params.get(name));
 					}
 				}
-				query.setResultTransformer(Transformers.aliasToBean(clazz));
+				query.setResultTransformer(new AnnotationBeanResultTransformer(clazz));
 				return query.list();
 			}
 		});
