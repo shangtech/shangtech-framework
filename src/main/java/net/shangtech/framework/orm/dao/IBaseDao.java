@@ -23,6 +23,4 @@ public interface IBaseDao<T> extends GenericQuery<T> {
 	Pagination<T> findPageByProperties(MapHolder<String> holder, Pagination<T> page);
 	
 	Pagination<T> findPageByProperties(String prpertyName, Object value, Pagination<T> page);
-	
-	T findOneByHql(String hql, Object...objects);
 }

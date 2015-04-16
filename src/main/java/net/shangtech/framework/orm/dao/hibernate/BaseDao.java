@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.shangtech.framework.orm.dao.IBaseDao;
+import net.shangtech.framework.orm.dao.XmlSqlQueryProvider;
 import net.shangtech.framework.orm.dao.support.MapHolder;
 import net.shangtech.framework.orm.dao.support.Pagination;
 import net.shangtech.framework.orm.dao.support.QueryBean;
@@ -18,13 +19,17 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.util.CollectionUtils;
+
 @SuppressWarnings("unchecked")
 public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 
+	@Autowired private XmlSqlQueryProvider queryProvider;
+	
 	@Override
     public void save(T entity) {
 	    getHibernateTemplate().save(getEntityClass().getName(), entity);
@@ -40,9 +45,9 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 		getHibernateTemplate().update(entity);
     }
 
-    @Override
+	@Override
     public T find(Long id) {
-	    return (T) getHibernateTemplate().get(getEntityClass(), id);
+	    return  (T) getHibernateTemplate().get(getEntityClass(), id);
     }
 
 	@Override
@@ -55,7 +60,7 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 		if (StringUtils.isNotBlank(orderBy)) {
 			queryString += " order by " + orderBy;
 		}
-		return (List<T>) getHibernateTemplate().find(queryString);
+		return getHibernateTemplate().find(queryString);
 	}
 	
 	public List<T> findByProperties(MapHolder<String> holder){
@@ -208,13 +213,42 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 	    return findPageByProperties(MapHolder.instance(prpertyName, value), page);
     }
 
-	@Override
-    public T findOneByHql(String hql, Object... objects) {
+	protected T findOneByHql(String hql, Object... objects) {
 	    List<T> list = getHibernateTemplate().find(hql, objects);
 	    if(CollectionUtils.isEmpty(list)){
 	    	return null;
 	    }
 	    return list.get(0);
     }
+
+	protected <E> List<E> findBySql(String sqlId, final MapHolder<String> holder, final Class<E> clazz) {
+		final Map<String, Object> params = holder.getMap();
+		final String sql = queryProvider.getQueryById(sqlId, params);
+		return getHibernateTemplate().execute(new HibernateCallback<List<E>>() {
+
+			@Override
+			public List<E> doInHibernate(Session session) throws HibernateException, SQLException {
+				Query query = session.createSQLQuery(sql);
+				String[] names = query.getNamedParameters();
+				if(names != null){
+					for(String name : names){
+						query.setParameter(name, params.get(name));
+					}
+				}
+				query.setResultTransformer(Transformers.aliasToBean(clazz));
+				return query.list();
+			}
+		});
+	}
+
+	protected <E> E findOneBySql(String sqlId, Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	protected <E> Pagination<E> findBySql(String sqlId, Map<String, Object> params, Pagination<E> pagination) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
