@@ -103,7 +103,7 @@ public class WorkbookReader<T> {
 	
 	private void buildModelMethods() throws InstantiationException, IllegalAccessException{
 		Class<T> clazz = getModelClass();
-		Method[] methods = clazz.getMethods();
+		Method[] methods = clazz.getDeclaredMethods();
 		modelMethods = new ArrayList<ModelMethod>();
 		for(Method method : methods){
 			Column column = method.getAnnotation(Column.class);

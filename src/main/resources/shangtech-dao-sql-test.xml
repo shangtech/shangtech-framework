@@ -2,5 +2,5 @@
 <sqls xmlns="http://www.shangtech.net/schema/sqls" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.shangtech.net/schema/sqls http://www.shangtech.net/schema/sqls/shangtech-dao-sql.xsd">
-	<sql id="Freight." template="false"></sql>
+	
 </sqls>
