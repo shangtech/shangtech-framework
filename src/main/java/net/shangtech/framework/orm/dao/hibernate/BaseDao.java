@@ -17,6 +17,7 @@ import net.shangtech.framework.orm.dao.support.QueryBean;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
@@ -182,8 +183,8 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 		});
 	}
 	
-	private Class<?> getEntityClass() {
-		Class<?> entityClass = (Class<?>) ((ParameterizedType) getClass()
+	private Class<T> getEntityClass() {
+		Class<T> entityClass = (Class<T>) ((ParameterizedType) getClass()
 				.getGenericSuperclass()).getActualTypeArguments()[0];
 		return entityClass;
 	}
@@ -220,6 +221,11 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 	    }
 	    return list.get(0);
     }
+	
+	protected T findOneBySql(String sqlId, final MapHolder<String> holder){
+		final Class<T> clazz = getEntityClass();
+		return findOneBySql(sqlId, holder, clazz);
+	}
 
 	protected <E> List<E> findBySql(String sqlId, final MapHolder<String> holder, final Class<E> clazz) {
 		final Map<String, Object> params = holder.getMap();
@@ -228,22 +234,29 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 
 			@Override
 			public List<E> doInHibernate(Session session) throws HibernateException, SQLException {
-				Query query = session.createSQLQuery(sql);
+				SQLQuery query = session.createSQLQuery(sql);
 				String[] names = query.getNamedParameters();
 				if(names != null){
 					for(String name : names){
 						query.setParameter(name, params.get(name));
 					}
 				}
-				query.setResultTransformer(new AnnotationBeanResultTransformer(clazz));
+				if(getEntityClass().equals(clazz)){
+					query.addEntity(clazz);
+				}else{
+					query.setResultTransformer(new AnnotationBeanResultTransformer(clazz));
+				}
 				return query.list();
 			}
 		});
 	}
 
-	protected <E> E findOneBySql(String sqlId, Map<String, Object> params) {
-		// TODO Auto-generated method stub
-		return null;
+	protected <E> E findOneBySql(String sqlId, final MapHolder<String> holder, final Class<E> clazz) {
+		List<E> list = findBySql(sqlId, holder, clazz);
+		if(CollectionUtils.isEmpty(list)){
+			return null;
+		}
+		return list.get(0);
 	}
 
 	protected <E> Pagination<E> findBySql(String sqlId, Map<String, Object> params, Pagination<E> pagination) {
