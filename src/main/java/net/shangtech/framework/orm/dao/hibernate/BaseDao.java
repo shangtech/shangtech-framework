@@ -29,7 +29,7 @@ import org.springframework.util.CollectionUtils;
 @SuppressWarnings("unchecked")
 public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 
-	@Autowired private XmlSqlQueryProvider queryProvider;
+	@Autowired(required = false) private XmlSqlQueryProvider queryProvider;
 	
 	@Override
     public void save(T entity) {
