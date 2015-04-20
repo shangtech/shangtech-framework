@@ -62,7 +62,10 @@ public class Pagination<T> {
 	public void setTotalCount(Integer totalCount) {
 		Assert.notNull(totalCount, "totalCount can not be null");
 		this.totalCount = totalCount;
-		totalPage = new Double(Math.ceil(totalCount/limit)).intValue();
+		totalPage = totalCount/limit;
+		if(totalCount%limit != 0){
+			totalPage = totalPage+1;
+		}
 	}
 
 	public Integer getStart() {
@@ -93,8 +96,11 @@ public class Pagination<T> {
 	}
 	
 	public static void main(String[] args){
+		Pagination<?> p = new Pagination<Object>();
+		p.setLimit(10);
 		for(int i = 0; i < 40; i++){
-			System.out.println(i+"/10="+(i/10));
+			p.setTotalCount(i);
+			System.out.println("total:" + p.getTotalCount() + ",page:" + p.getTotalPage());
 		}
 	}
 	
