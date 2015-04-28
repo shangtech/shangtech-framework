@@ -6,6 +6,7 @@ import java.util.List;
 
 import net.shangtech.framework.orm.dao.IBaseDao;
 import net.shangtech.framework.orm.dao.support.BaseEntity;
+import net.shangtech.framework.orm.dao.support.MapHolder;
 import net.shangtech.framework.orm.dao.support.Pagination;
 import net.shangtech.framework.orm.dao.support.QueryBean;
 
@@ -86,6 +87,11 @@ public class BaseService<T extends BaseEntity<Long>> implements IBaseService<T> 
 		Class<?> entityClass = (Class<?>) ((ParameterizedType) getClass()
 				.getGenericSuperclass()).getActualTypeArguments()[0];
 		return entityClass;
+	}
+
+	@Override
+	public Pagination<T> findAllByPage(Pagination<T> pagination, String orderBy) {
+		return dao().findPageByProperties(new MapHolder<String>(), orderBy, pagination);
 	}
 
 }

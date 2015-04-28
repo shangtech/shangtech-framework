@@ -9,4 +9,5 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public interface IBaseService<T extends BaseEntity<Long>> extends GenericQuery<T> {
 	Pagination<T> findAllByPage(Pagination<T> pagination);
+	Pagination<T> findAllByPage(Pagination<T> pagination, String orderBy);
 }
