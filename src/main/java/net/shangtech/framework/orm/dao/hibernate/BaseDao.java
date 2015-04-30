@@ -258,10 +258,59 @@ public class BaseDao<T> extends HibernateDaoSupport implements IBaseDao<T> {
 		}
 		return list.get(0);
 	}
+	
+	protected Pagination<T> findBySql(String sqlId, MapHolder<String> holder, Pagination<T> pagination){
+		return findBySql(sqlId, holder, pagination, getEntityClass());
+	}
 
-	protected <E> Pagination<E> findBySql(String sqlId, Map<String, Object> params, Pagination<E> pagination) {
-		// TODO Auto-generated method stub
-		return null;
+	protected <E> Pagination<E> findBySql(String sqlId, MapHolder<String> holder, Pagination<E> pagination, final Class<E> clazz) {
+		final Map<String, Object> params = holder.getMap();
+		final String sql = queryProvider.getQueryById(sqlId, params);
+		final int start = pagination.getStart();
+		final int limit = pagination.getLimit();
+		List<E> items = getHibernateTemplate().execute(new HibernateCallback<List<E>>() {
+
+			@Override
+			public List<E> doInHibernate(Session session) throws HibernateException, SQLException {
+				SQLQuery query = session.createSQLQuery(sql);
+				String[] names = query.getNamedParameters();
+				if(names != null){
+					for(String name : names){
+						query.setParameter(name, params.get(name));
+					}
+				}
+				if(getEntityClass().equals(clazz)){
+					query.addEntity(clazz);
+				}else{
+					query.setResultTransformer(new AnnotationBeanResultTransformer(clazz));
+				}
+				query.setFirstResult(start);
+				query.setMaxResults(limit);
+				return query.list();
+			}
+			
+		});
+		pagination.setItems(items);
+		
+		final String countSql = "select count(1) as cnt from (" + sql + ") temp";
+		Number count = getHibernateTemplate().execute(new HibernateCallback<Number>() {
+
+			@Override
+			public Number doInHibernate(Session session)
+					throws HibernateException, SQLException {
+				SQLQuery query = session.createSQLQuery(countSql);
+				String[] names = query.getNamedParameters();
+				if(names != null){
+					for(String name : names){
+						query.setParameter(name, params.get(name));
+					}
+				}
+				return (Number) query.uniqueResult();
+			}
+			
+		});
+		pagination.setTotalCount(count.intValue());
+		return pagination;
 	}
 
 }
